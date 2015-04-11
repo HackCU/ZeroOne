@@ -2,13 +2,6 @@
     Product: Acta Non Verba
     */
 
-/****************
-*				*
-* Variables		*
-*				*
-*****************/
-#include "variables.c"
-
 /************
 *			*
 * Includes	*
@@ -16,6 +9,13 @@
 *************/
 
 #include "includes.c"
+
+/****************
+*				*
+* Variables		*
+*				*
+*****************/
+#include "global_variables.c"
 
 /************
 *			*

@@ -45,9 +45,83 @@ ObjectList* initObjectList()
 
 /************
 *			*
+* Clean up	*
+*			*
+************/
+
+bool internal_objectlist_clean_up(ObjectList* list, bool isRecursive)
+{
+	if(list == NULL) return false;
+	
+	if(isRecursive)
+	{
+		int i;
+		for(i = 0; i < list->length; i++)
+		{
+			object_clean_up(&(list->data[i]));
+		}
+	}
+
+	free(&(list->length));
+	free(&(list->MAX_SIZE));
+	free(list);
+	
+	return true;
+}
+
+bool objectlist_clean_up(ObjectList* list)
+{	
+	return internal_objectlist_clean_up(list, false);
+}
+
+bool recursive_objectlist_clean_up(ObjectList* list)
+{
+	return internal_objectlist_clean_up(list, true);
+}
+
+/************
+*			*
 * Helpers	*
 *			*
 ************/
+bool resizeObjectList(ObjectList* list, unsigned int target_length)
+{
+	if(list == NULL || target_length == 0) return false;
+
+	//get right size	
+	unsigned int right_size = 1;
+	while(target_length > right_size) {right_size*=2;}
+	
+	//create the cloud with right size where the data will be copied to
+	ObjectList* temp_list = initObjectListWithSize(right_size);
+	
+	//copy the data
+	unsigned int i;
+	for(i = 0; (i < right_size)&&(i<list->length); i++)
+	{
+		#include "checkless_addobject.c"
+	}
+	
+	//if we are cutting short, clean up the tail points
+	if(list->length > temp_list->length)
+	{
+		for(i = temp_list->length; i < list->length; i++)
+		{
+			object_clean_up( list->data[i] );
+		}
+	}
+	
+	//do the final assignment and clean up temporary list
+	list->data = temp_list->data;
+	list->length = temp_list->length;
+	list->MAX_SIZE = temp_list->MAX_SIZE;
+	
+	list->data_has_holes = temp_list->data_has_holes;
+	
+	object_list_clean_up(temp_list);
+	
+	return true;
+}
 
 bool internal_removeObject(ObjectList* list, unsigned int index, bool isRecursive)
 {
@@ -112,79 +186,4 @@ bool addObject(ObjectList* list, Triangle3D* target)
 	if(target == NULL)list->data_has_holes = true;
 	
 	return true;
-}
-
-bool resizeObjectList(ObjectList* list, unsigned int target_length)
-{
-	if(list == NULL || target_length == 0) return false;
-
-	//get right size	
-	unsigned int right_size = 1;
-	while(target_length > right_size) {right_size*=2;}
-	
-	//create the cloud with right size where the data will be copied to
-	ObjectList* temp_list = initObjectListWithSize(right_size);
-	
-	//copy the data
-	unsigned int i;
-	for(i = 0; (i < right_size)&&(i<list->length); i++)
-	{
-		addObject(temp_list,list->data[i]);
-	}
-	
-	//if we are cutting short, clean up the tail points
-	if(list->length > temp_list->length)
-	{
-		for(i = temp_list->length; i < list->length; i++)
-		{
-			object_clean_up( list->data[i] );
-		}
-	}
-	
-	//do the final assignment and clean up temporary list
-	list->data = temp_list->data;
-	list->length = temp_list->length;
-	list->MAX_SIZE = temp_list->MAX_SIZE;
-	
-	list->data_has_holes = temp_list->data_has_holes;
-	
-	object_list_clean_up(temp_list);
-	
-	return true;
-}
-
-/************
-*			*
-* Clean up	*
-*			*
-************/
-
-bool internal_objectlist_clean_up(ObjectList* list, bool isRecursive)
-{
-	if(list == NULL) return false;
-	
-	if(isRecursive)
-	{
-		int i;
-		for(i = 0; i < list->length; i++)
-		{
-			object_clean_up(&(list->data[i]));
-		}
-	}
-
-	free(&(list->length));
-	free(&(list->MAX_SIZE));
-	free(list);
-	
-	return true;
-}
-
-bool objectlist_clean_up(ObjectList* list)
-{	
-	return internal_objectlist_clean_up(list, false);
-}
-
-bool recursive_objectlist_clean_up(ObjectList* list)
-{
-	return internal_objectlist_clean_up(list, true);
 }

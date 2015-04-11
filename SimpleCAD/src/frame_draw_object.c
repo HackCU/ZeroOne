@@ -5,9 +5,9 @@ for(f_d_i = 0; f_d_i < object->list->length; f_d_i++)
 	//reading point from triangle f_d_i
 	Point3D* points[3];
 	
-	points[0] = object->cloud[object->list[f_d_i][0]];
-	points[1] = object->cloud[object->list[f_d_i][1]];
-	points[2] = object->cloud[object->list[f_d_i][2]];
+	points[0] = object->cloud[object->list[f_d_i]->a];
+	points[1] = object->cloud[object->list[f_d_i]->b];
+	points[2] = object->cloud[object->list[f_d_i]->c];
 	
 	//render triangle
 	glRotatef (theta, 0.0f, 0.0f, 1.0f);

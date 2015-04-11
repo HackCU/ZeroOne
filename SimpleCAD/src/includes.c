@@ -6,7 +6,8 @@
 #endif
 
 #ifndef _WIN32
-	#include "SDL.h"
+	#include <SDL2/SDL.h>
+	#include <gl/gl.h>
 #endif
 
 #include "default_strings.c"

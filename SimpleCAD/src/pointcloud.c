@@ -48,9 +48,84 @@ PointCloud* initPointCloud()
 
 /************
 *			*
+* Clean up	*
+*			*
+************/
+
+bool internal_pointcloud_clean_up(PointCloud* cloud, bool isRecursive)
+{
+	if(cloud == NULL) return false;
+	
+	if(isRecursive)
+	{
+		int i;
+		for(i = 0; i < cloud->length; i++)
+		{
+			point_clean_up(cloud->data[i]);
+		}
+	}
+	
+	free(&(cloud->length));
+	free(&(cloud->MAX_SIZE));
+	free(cloud);
+	
+	return true;
+}
+
+bool pointcloud_clean_up(PointCloud* cloud)
+{
+	return internal_pointcloud_clean_up(cloud, false);
+}
+
+bool recursive_pointcloud_clean_up(PointCloud* cloud)
+{
+	return internal_pointcloud_clean_up(cloud, true);
+}
+
+/************
+*			*
 * Helpers	*
 *			*
 ************/
+bool resizePointCloud(PointCloud* cloud, unsigned int target_length)
+{
+	if(cloud == NULL || target_length == 0) return false;
+
+	//get right size	
+	unsigned int right_size = 1;
+	while(target_length > right_size) {right_size*=2;}
+	
+	//create the cloud with right size where the data will be copied to
+	PointCloud* temp_cloud = initPointCloudWithSize(right_size);
+	
+	//copy the data
+	unsigned int i;
+	for(i = 0; (i < right_size)&&(i<cloud->length); i++)
+	{
+		#include "checkless_addpoint.c"
+	}
+	
+	//if we are cutting short, clean up the tail points
+	if(cloud->length > temp_cloud->length)
+	{
+		for(i = temp_cloud->length; i < cloud->length; i++)
+		{
+			point_clean_up( cloud->data[i] );
+		}
+	}
+	
+	//do the final assignment and clean up temporary cloud
+	cloud->data = temp_cloud->data;
+	cloud->length = temp_cloud->length;
+	cloud->MAX_SIZE = temp_cloud->MAX_SIZE;
+	
+	cloud->data_has_holes = temp_cloud->data_has_holes;
+	
+	pointcloud_clean_up(temp_cloud);
+	
+	return true;
+}
+
 bool internal_removePointFromCloud(PointCloud* cloud, unsigned int index, bool isRecursive)
 {
 	if(cloud == NULL || index >= cloud->length) return false;
@@ -128,45 +203,6 @@ bool addPointCopyToCloud(PointCloud* cloud, Point3D* target)
 		point_clean_up(point);
 }
 
-bool resizePointCloud(PointCloud* cloud, unsigned int target_length)
-{
-	if(cloud == NULL || target_length == 0) return false;
-
-	//get right size	
-	unsigned int right_size = 1;
-	while(target_length > right_size) {right_size*=2;}
-	
-	//create the cloud with right size where the data will be copied to
-	PointCloud* temp_cloud = initPointCloudWithSize(right_size);
-	
-	//copy the data
-	unsigned int i;
-	for(i = 0; (i < right_size)&&(i<cloud->length); i++)
-	{
-		addPointToCloud(temp_cloud,cloud->data[i]);
-	}
-	
-	//if we are cutting short, clean up the tail points
-	if(cloud->length > temp_cloud->length)
-	{
-		for(i = temp_cloud->length; i < cloud->length; i++)
-		{
-			point_clean_up( cloud->data[i] );
-		}
-	}
-	
-	//do the final assignment and clean up temporary cloud
-	cloud->data = temp_cloud->data;
-	cloud->length = temp_cloud->length;
-	cloud->MAX_SIZE = temp_cloud->MAX_SIZE;
-	
-	cloud->data_has_holes = temp_cloud->data_has_holes;
-	
-	pointcloud_clean_up(temp_cloud);
-	
-	return true;
-}
-
 bool calculateCloudCenter(PointCloud* cloud)
 {
 	if(cloud == NULL) return false;
@@ -174,40 +210,4 @@ bool calculateCloudCenter(PointCloud* cloud)
 	//calculate
 	
 	return true;
-}
-
-/************
-*			*
-* Clean up	*
-*			*
-************/
-
-bool internal_pointcloud_clean_up(PointCloud* cloud, bool isRecursive)
-{
-	if(cloud == NULL) return false;
-	
-	if(isRecursive)
-	{
-		int i;
-		for(i = 0; i < cloud->length; i++)
-		{
-			point_clean_up(cloud->data[i]);
-		}
-	}
-	
-	free(&(cloud->length));
-	free(&(cloud->MAX_SIZE));
-	free(cloud);
-	
-	return true;
-}
-
-bool pointcloud_clean_up(PointCloud* cloud)
-{	
-	return internal_pointcloud_clean_up(cloud, false);
-}
-
-bool recursive_pointcloud_clean_up(PointCloud* cloud)
-{
-	return internal_pointcloud_clean_up(cloud, true);
 }
