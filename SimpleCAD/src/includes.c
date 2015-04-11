@@ -18,9 +18,11 @@
 
 #include "point3D.c"
 #include "triangle3D.c"
+#include "pointlight3d.c"
+#include "camera.c"
 
 #include "pointcloud.c"
 #include "trianglelist.c"
 #include "object3D.c"
+#include "objectlist.c"
 
-#include "camera.c"

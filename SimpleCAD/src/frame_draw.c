@@ -5,19 +5,33 @@ glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 glPushMatrix ();
 	//relative camera movements
 	glTranslatef(-camera->position->x, -camera->position->y, -camera->position->z);
+	glRotatef   (30.0, 1.0f, 1.0f, 1.0f);
 	
 	//now draw everything
-	glRotatef (theta, 0.0f, 0.0f, 1.0f);
-		glBegin(GL_TRIANGLES);
-			//draw all objects
-			glColor3f(1.0, 0.0, 0.0); glVertex3f(-1.0, -1.0, 0.0);
-			glColor3f(1.0, 1.0, 1.0); glVertex3f( 1.0,  1.0, 0.0);
-			glColor3f(1.0, 1.0, 1.0); glVertex3f(-1.0,  1.0, 0.0);
+	{
+		//draw all objects
+		Object3D* object;	
+		//loop through objects
+		
+		{
+			//set object
+			object = cube;
 			
-			glColor3f(1.0, 1.0, 1.0); glVertex3f( 1.0,  1.0, 0.0);
-			glColor3f(1.0, 1.0, 1.0); glVertex3f(-1.0, -1.0, 0.0);
-			glColor3f(1.0, 1.0, 1.0); glVertex3f( 1.0, -1.0, 0.0);
-		glEnd();
+			//draw object
+			#include "frame_draw_object.c"
+		}
+	}
+	
+	//draw UI
+	{
+		//draw cube guide in top-right
+		
+		
+		//draw cursor
+		
+		
+	}
+		
 glPopMatrix ();
 
 theta += 0.05f;

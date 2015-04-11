@@ -2,6 +2,8 @@ typedef struct Object3D
 {	
 	PointCloud* cloud;
 	TriangleList* list;
+	
+	char* name;
 }
 Object3D;
 
@@ -16,7 +18,7 @@ Object3D* initObject()
 	
 	object = malloc(sizeof(Object3D));
 	
-	if(NULL == object )
+	if(NULL == object)
 	{
 		log_error(OBJECT_INIT_ERROR);
 		return NULL;
@@ -24,6 +26,8 @@ Object3D* initObject()
 	
 	object->cloud = initPointCloud();
 	object->list  = initTriangleList();
+	
+	object->name = "Nameless";
 	
 	return object;
 }
@@ -40,15 +44,26 @@ Object3D* initObject()
 * Clean up	*
 *			*
 ************/
-void object_clean_up(Object3D* object)
+bool internal_object_clean_up(Object3D* object, bool isRecursive)
 {
-	triangle_list_clean_up(object->list);	
+	if(object == NULL) return false;
+	
+	if(isRecursive)
+		recursive_pointcloud_clean_up(object->cloud);
+		
+	recursive_triangle_list_clean_up(object->list);
+	free(object->name);	
 	free(object);
+	
+	return true;
 }
 
-void recursive_object_clean_up(Object3D* object)
+bool object_clean_up(Object3D* object)
 {
-	pointcloud_clean_up(object->cloud);
-	
-	object_clean_up(object);
+	return internal_object_clean_up(object, false);
+}
+
+bool recursive_object_clean_up(Object3D* object)
+{
+	return internal_object_clean_up(object, true);
 }

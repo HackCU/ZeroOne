@@ -3,6 +3,8 @@ typedef struct Triangle3D
 	GLuint a;
 	GLuint b;
 	GLuint c;
+	
+	Point3D* normal;
 }
 Triangle3D;
 
@@ -12,7 +14,7 @@ Triangle3D;
 *			*
 *************/
 
-Triangle3D* initTriangle()
+Triangle3D* initTriangleWithValues(GLuint a, GLuint b, GLuint c)
 {
 	Triangle3D* triangle;
 	
@@ -24,11 +26,16 @@ Triangle3D* initTriangle()
 		return NULL;
 	}
 	
-	triangle->a = 0;
-	triangle->b = 0;
-	triangle->c = 0;
+	triangle->a = a;
+	triangle->b = b;
+	triangle->c = c;
 	
 	return triangle;
+}
+
+Triangle3D* initTriangle()
+{
+	return initTriangleWithValues(0,0,0);
 }
 
 /************
@@ -46,6 +53,17 @@ bool flipTriangle(Triangle3D* triangle)
 	triangle->a = triangle->b;
 	triangle->b = intermediate;
 	
+	negatePoint(triangle->normal);
+	
+	return true;
+}
+
+bool calculateNormal(Triangle3D* triangle)
+{
+	if(triangle == NULL) return false;
+	
+	//calculate
+	
 	return true;
 }
 
@@ -54,10 +72,15 @@ bool flipTriangle(Triangle3D* triangle)
 * Clean up	*
 *			*
 ************/
-void triangle_clean_up(Triangle3D* triangle)
+bool triangle_clean_up(Triangle3D* triangle)
 {
+	if(triangle == NULL) return false;
+	
 	free(&(triangle->a));
 	free(&(triangle->b));
 	free(&(triangle->c));
+	point_clean_up(triangle->normal);
 	free(triangle);
+	
+	return true;
 }

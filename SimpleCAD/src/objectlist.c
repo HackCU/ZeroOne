@@ -1,29 +1,29 @@
-typedef struct TriangleList
+typedef struct ObjectList
 {
-	Triangle3D** data;
+	Object3D** data;
 	
 	unsigned int length;
 	unsigned int MAX_SIZE;
 	
 	bool data_has_holes;
 }
-TriangleList;
+ObjectList;
 
 /************
 *			*
 * Init		*
 *			*
 ************/
-TriangleList* initTriangleListWithSize(unsigned int target_length)
+ObjectList* initObjectListWithSize(unsigned int target_length)
 {	
 	//create list to return
-	TriangleList* list;
+	ObjectList* list;
 	
-	list = calloc(target_length,sizeof(TriangleList));
+	list = calloc(target_length,sizeof(ObjectList));
 	
 	if(NULL == list )
 	{
-		log_error(TRIANGLELIST_INIT_ERROR);
+		log_error(OBJECTLIST_INIT_ERROR);
 		return NULL;
 	}
 	
@@ -38,9 +38,9 @@ TriangleList* initTriangleListWithSize(unsigned int target_length)
 	return list;
 }
 
-TriangleList* initTriangleList()
+ObjectList* initObjectList()
 {
-	return initTriangleListWithSize(1);
+	return initObjectListWithSize(1);
 }
 
 /************
@@ -49,12 +49,12 @@ TriangleList* initTriangleList()
 *			*
 ************/
 
-bool internal_removeTriangle(TriangleList* list, unsigned int index, bool isRecursive)
+bool internal_removeObject(ObjectList* list, unsigned int index, bool isRecursive)
 {
 	if(list == NULL || index >= list->length) return false;
 	
 	if(isRecursive)
-		triangle_clean_up(list->data[index]);
+		object_clean_up(list->data[index]);
 	
 	if(index == list->length-1)
 	{
@@ -69,17 +69,17 @@ bool internal_removeTriangle(TriangleList* list, unsigned int index, bool isRecu
 	return true;
 }
 
-bool recursive_removeTriangle(TriangleList* list, unsigned int index)
+bool recursive_removeObject(ObjectList* list, unsigned int index)
 {
-	return internal_removeTriangle(list, index, true);
+	return internal_removeObject(list, index, true);
 }
 
-bool removeTriangle(TriangleList* list, unsigned int index)
+bool removeObject(ObjectList* list, unsigned int index)
 {
-	return internal_removeTriangle(list, index, false);
+	return internal_removeObject(list, index, false);
 }
 
-bool addTriangle(TriangleList* list, Triangle3D* target)
+bool addObject(ObjectList* list, Triangle3D* target)
 {
 	if(list == NULL ) return false;
 	
@@ -103,7 +103,7 @@ bool addTriangle(TriangleList* list, Triangle3D* target)
 	else
 	{
 		//check if there is enough space and resize if necessary
-		if(list->length+1 > list->MAX_SIZE) resizeTriangleList(list,list->length+1);
+		if(list->length+1 > list->MAX_SIZE) resizeObjectList(list,list->length+1);
 		
 		list->data[list->length] = target;
 		list->length++;
@@ -114,7 +114,7 @@ bool addTriangle(TriangleList* list, Triangle3D* target)
 	return true;
 }
 
-bool resizeTriangleList(TriangleList* list, unsigned int target_length)
+bool resizeObjectList(ObjectList* list, unsigned int target_length)
 {
 	if(list == NULL || target_length == 0) return false;
 
@@ -123,13 +123,13 @@ bool resizeTriangleList(TriangleList* list, unsigned int target_length)
 	while(target_length > right_size) {right_size*=2;}
 	
 	//create the cloud with right size where the data will be copied to
-	TriangleList* temp_list = initTriangleListWithSize(right_size);
+	ObjectList* temp_list = initObjectListWithSize(right_size);
 	
 	//copy the data
 	unsigned int i;
 	for(i = 0; (i < right_size)&&(i<list->length); i++)
 	{
-		addTriangle(temp_list,list->data[i]);
+		addObject(temp_list,list->data[i]);
 	}
 	
 	//if we are cutting short, clean up the tail points
@@ -137,7 +137,7 @@ bool resizeTriangleList(TriangleList* list, unsigned int target_length)
 	{
 		for(i = temp_list->length; i < list->length; i++)
 		{
-			triangle_clean_up( list->data[i] );
+			object_clean_up( list->data[i] );
 		}
 	}
 	
@@ -148,7 +148,7 @@ bool resizeTriangleList(TriangleList* list, unsigned int target_length)
 	
 	list->data_has_holes = temp_list->data_has_holes;
 	
-	trianglelist_clean_up(temp_list);
+	object_list_clean_up(temp_list);
 	
 	return true;
 }
@@ -159,7 +159,7 @@ bool resizeTriangleList(TriangleList* list, unsigned int target_length)
 *			*
 ************/
 
-bool internal_trianglelist_clean_up(TriangleList* list, bool isRecursive)
+bool internal_objectlist_clean_up(ObjectList* list, bool isRecursive)
 {
 	if(list == NULL) return false;
 	
@@ -168,7 +168,7 @@ bool internal_trianglelist_clean_up(TriangleList* list, bool isRecursive)
 		int i;
 		for(i = 0; i < list->length; i++)
 		{
-			triangle_clean_up(&(list->data[i]));
+			object_clean_up(&(list->data[i]));
 		}
 	}
 
@@ -179,12 +179,12 @@ bool internal_trianglelist_clean_up(TriangleList* list, bool isRecursive)
 	return true;
 }
 
-bool trianglelist_clean_up(TriangleList* list)
+bool objectlist_clean_up(ObjectList* list)
 {	
-	return internal_trianglelist_clean_up(list, false);
+	return internal_objectlist_clean_up(list, false);
 }
 
-bool recursive_trianglelist_clean_up(TriangleList* list)
+bool recursive_objectlist_clean_up(ObjectList* list)
 {
-	return internal_trianglelist_clean_up(list, true);
+	return internal_objectlist_clean_up(list, true);
 }
