@@ -40,6 +40,24 @@ Triangle3D* initTriangle()
 
 /************
 *			*
+* Clean up	*
+*			*
+************/
+bool triangle_clean_up(Triangle3D* triangle)
+{
+	if(triangle == NULL) return false;
+	
+	free(&(triangle->a));
+	free(&(triangle->b));
+	free(&(triangle->c));
+	point_clean_up(triangle->normal);
+	free(triangle);
+	
+	return true;
+}
+
+/************
+*			*
 * Helpers	*
 *			*
 *************/
@@ -63,24 +81,6 @@ bool calculateNormal(Triangle3D* triangle)
 	if(triangle == NULL) return false;
 	
 	//calculate
-	
-	return true;
-}
-
-/************
-*			*
-* Clean up	*
-*			*
-************/
-bool triangle_clean_up(Triangle3D* triangle)
-{
-	if(triangle == NULL) return false;
-	
-	free(&(triangle->a));
-	free(&(triangle->b));
-	free(&(triangle->c));
-	point_clean_up(triangle->normal);
-	free(triangle);
 	
 	return true;
 }

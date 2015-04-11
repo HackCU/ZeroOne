@@ -1,13 +1,26 @@
+//get center
+Point3D* center = initPoint();
+addPoints(center,object->cloud->center);
+
 //repeat for each triangle in object
-int f_d_i;
-for(f_d_i = 0; f_d_i < object->list->length; f_d_i++)
+Point3D* 	points[3];
+GLuint 		indices[3];
+
+int i;
+for(i = 0; i < object->list->length; i++)
 {
-	//reading point from triangle f_d_i
-	Point3D* points[3];
+	//reading points from triangle i
+	indices[0] = object->list->data[i]->a;
+	indices[1] = object->list->data[i]->b;
+	indices[2] = object->list->data[i]->c;
 	
-	points[0] = object->cloud[object->list[f_d_i]->a];
-	points[1] = object->cloud[object->list[f_d_i]->b];
-	points[2] = object->cloud[object->list[f_d_i]->c];
+	if(indices[0] >= object->cloud->length)break;
+	if(indices[1] >= object->cloud->length)break;
+	if(indices[2] >= object->cloud->length)break;
+	
+	points[0] = object->cloud->data[indices[0]]; addPoints(points[0],center);
+	points[1] = object->cloud->data[indices[1]]; addPoints(points[1],center);
+	points[2] = object->cloud->data[indices[2]]; addPoints(points[2],center);
 	
 	//render triangle
 	glRotatef (theta, 0.0f, 0.0f, 1.0f);

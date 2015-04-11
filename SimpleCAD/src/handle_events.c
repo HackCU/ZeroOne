@@ -4,10 +4,9 @@ switch (event.type)
 		done = true;
 		break;
 
-	case SDL_KEYUP:
 	case SDL_KEYDOWN:
 		{
-			#include "handle_keyboardEvent.c"
+			//#include "handle_keyboardEvent.c"
 			break;
 		}
 
@@ -17,7 +16,6 @@ switch (event.type)
 			break;
 		}
 
-	case SDL_MOUSEBUTTONUP:
 	case SDL_MOUSEBUTTONDOWN:
 		{
 			#include "handle_mouseButtonEvent.c"

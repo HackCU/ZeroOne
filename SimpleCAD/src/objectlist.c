@@ -58,7 +58,7 @@ bool internal_objectlist_clean_up(ObjectList* list, bool isRecursive)
 		int i;
 		for(i = 0; i < list->length; i++)
 		{
-			object_clean_up(&(list->data[i]));
+			object_clean_up(list->data[i]);
 		}
 	}
 
@@ -153,7 +153,7 @@ bool removeObject(ObjectList* list, unsigned int index)
 	return internal_removeObject(list, index, false);
 }
 
-bool addObject(ObjectList* list, Triangle3D* target)
+bool addObject(ObjectList* list, Object3D* target)
 {
 	if(list == NULL ) return false;
 	

@@ -58,7 +58,7 @@ bool internal_trianglelist_clean_up(TriangleList* list, bool isRecursive)
 		int i;
 		for(i = 0; i < list->length; i++)
 		{
-			triangle_clean_up(&(list->data[i]));
+			triangle_clean_up(list->data[i]);
 		}
 	}
 

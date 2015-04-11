@@ -10,6 +10,9 @@
 
 #define LIGHTPOINT_INIT_ERROR __LINE__
 
+#define MOUSE2D_INIT_ERROR __LINE__
+#define MOUSE3D_INIT_ERROR __LINE__
+
 typedef struct log_node
 {
 	struct log_node* previous;

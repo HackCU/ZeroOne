@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <math.h>
 
 #ifdef _WIN32
 	#include <SDL2/SDL.h>
@@ -26,4 +27,7 @@
 #include "trianglelist.c"
 #include "object3D.c"
 #include "objectlist.c"
+
+#include "mouse2D.c"
+#include "mouse3D.c"
 
