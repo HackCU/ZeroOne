@@ -68,5 +68,5 @@ void triangle_list_clean_up(TriangleList* list)
 	
 	free(&(list->length));
 	free(&(list->MAX_LENGTH));
-	free(&list);
+	free(list);
 }

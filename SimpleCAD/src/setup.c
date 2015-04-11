@@ -20,18 +20,6 @@ if(!window)
 	return 1;
 }
 
-//ODE setup
-/*
-Create a dynamics world.
-Create bodies in the dynamics world.
-Set the state (position etc) of all bodies.
-Create joints in the dynamics world.
-Attach the joints to the bodies.
-Set the parameters of all joints.
-Create a collision world and collision geometry objects, as necessary.
-Create a joint group to hold the contact joints.
-*/
-
 SDL_GLContext gl = SDL_GL_CreateContext(window);
 
 #include "setup_gl.c"
